@@ -134,10 +134,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50f8679e8cdf624d83991bfe916df3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  speed: 200
-  attackPrepareTime: 0.3
-  attackTime: 0.5
-  attackCoolDownTime: 2
-  hp: 2
-  godMode: 0
+  hp: 1

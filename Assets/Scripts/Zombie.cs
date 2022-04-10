@@ -1,21 +1,56 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Zombie : MonoBehaviour
 {
+    private EnemyData data;
+
+    // Скорость врага
+    public float Speed
+    {
+        get { return data.Speed; }
+        protected set {}
+    }
+
+    // Подготовка к атаке
+    public float AtkPrep
+    {
+        get { return data.AtkPrep; }
+        protected set {}
+    }
+
+    // Атака
+    public float AtkHit
+    {
+        get { return data.AtkHit; }
+        protected set {}
+    }
+
+    // Кд атаки
+    public float AtkCd
+    {
+        get { return data.AtkCd; }
+        protected set {}
+    }
+
+    // Инициализация врага
+    public void Init(EnemyData _data)
+    {
+        data = _data;
+    }
+
+    public static Action<GameObject> OnEnemyDeath;
+
     private GameObject player;
-    public float speed = 400;
     private Rigidbody2D rb;
     private float move;
     private float t = 0;
     private float tStep = 0.05f;
     private float tMax = 1;
     private float tMin = 0;
-    public float attackPrepareTime = 0.3f;
-    public float attackTime = 0.5f;
-    public float attackCoolDownTime = 2f;
-    private int attackStage = 0;
+    public int attackStage = 0;
     public int hp = 2;
     private bool lookRight = true;
     private bool godMode = false;
@@ -43,7 +78,7 @@ public class Zombie : MonoBehaviour
         }
         else
         {
-            rb.velocity = new Vector2(speed * move * Time.fixedDeltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(data.Speed * move * Time.fixedDeltaTime, rb.velocity.y);
         }
     }
 
@@ -87,7 +122,7 @@ public class Zombie : MonoBehaviour
     // Уничтожение объекта
     void dieCheck()
     {
-        if (hp == 0) Destroy(gameObject);
+        if (hp == 0 && OnEnemyDeath != null) OnEnemyDeath(gameObject);
     }
 
     void flip()
@@ -101,15 +136,15 @@ public class Zombie : MonoBehaviour
     {
         attackStage = 1;
         GetComponent<SpriteRenderer>().color = Color.white;
-        yield return new WaitForSeconds(attackPrepareTime);
+        yield return new WaitForSeconds(data.AtkPrep);
 
         attackStage = 2;
         GetComponent<SpriteRenderer>().color = Color.magenta;
-        yield return new WaitForSeconds(attackTime);
+        yield return new WaitForSeconds(data.AtkHit);
 
         GetComponent<SpriteRenderer>().color = Color.yellow;
         attackStage = 3;
-        yield return new WaitForSeconds(attackCoolDownTime);
+        yield return new WaitForSeconds(data.AtkCd);
 
         attackStage = 0;
         GetComponent<SpriteRenderer>().color = Color.black;
